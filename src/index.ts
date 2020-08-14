@@ -1,13 +1,12 @@
 import "reflect-metadata";
+import * as config from "config";
 import * as os from 'os';
 import * as cluster from 'cluster';
-import * as path from 'path';
 import * as express from 'express';
+import * as bodyParser from "body-parser";
+// import * as helmet from "helmet";
 import {Container} from "inversify";
 import {InversifyExpressServer} from "inversify-express-utils";
-import helmet from "helmet";
-import * as bodyParser from "body-parser";
-import  * as config  from "config";
 import {createConnection as connectToDb} from "typeorm";
 
 import {ApplicationContainer, ApiContainer} from "./containers";
@@ -43,7 +42,6 @@ const setupCluster = () => {
 
 const startServer = async () => {
     const container = new Container();
-
     await container.loadAsync(...containers);
 
     const app = new InversifyExpressServer(container);
@@ -52,7 +50,7 @@ const startServer = async () => {
             extended: true
         }));
         app.use(bodyParser.json());
-        app.use(helmet());
+        // app.use(helmet());
     });
 
     const server = app.build();

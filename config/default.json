@@ -5,6 +5,11 @@
     "port": 3306,
     "username": "test",
     "password": "test",
-    "database": "test"
+    "synchronize": true,
+    "database": "express_skeleton_server",
+    "logging": false,
+    "entities": [
+        "bin/api/entities/*.js"
+    ]
   }
 }
