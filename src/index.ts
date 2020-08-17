@@ -7,7 +7,7 @@ import * as bodyParser from "body-parser";
 // import * as helmet from "helmet";
 import {Container} from "inversify";
 import {InversifyExpressServer} from "inversify-express-utils";
-import {createConnection as connectToDb} from "typeorm";
+import {createConnection} from "typeorm";
 
 import {ApplicationContainer, ApiContainer} from "./containers";
 
@@ -61,7 +61,8 @@ const startServer = async () => {
 
 // Run in cluster mode
 (async () => {
-    await connectToDb(config.get("Databases"));
+    const db = await createConnection(config.get("Databases"));
+    await db.runMigrations();
 
     if (process.env.CLUSTER_MODE === 'true' && cluster.isMaster) {
         setupCluster();

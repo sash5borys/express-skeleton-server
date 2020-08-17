@@ -23,9 +23,9 @@ export class UserController {
         try {
             const id = parseInt(param);
             return await this.userService.getUserById(id);
-        } catch (e) {
+        } catch (err) {
             res.status(500);
-            res.send(e.message);
+            res.send(err.message);
         }
     }
 
@@ -44,9 +44,9 @@ export class UserController {
         try {
             const id = parseInt(param);
             return await this.userService.updateUser(id, data);
-        } catch (e) {
+        } catch (err) {
             res.status(500);
-            res.send(e.message);
+            res.send(err.message);
         }
     }
 }

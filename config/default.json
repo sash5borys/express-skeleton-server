@@ -3,13 +3,24 @@
     "type": "mysql",
     "host": "localhost",
     "port": 3306,
-    "username": "test",
-    "password": "test",
+    "username": "root",
+    "password": "root",
     "synchronize": true,
     "database": "express_skeleton_server",
     "logging": false,
     "entities": [
-        "bin/api/entities/*.js"
-    ]
+      "bin/api/entities/*.js"
+    ],
+    "migrations": [
+      "bin/database/migrations/*.js"
+    ],
+    "cli": {
+      "entitiesDir": [
+        "bin/api/entities"
+      ],
+      "migrationsDir": [
+        "bin/database/migrations"
+      ]
+    }
   }
 }
