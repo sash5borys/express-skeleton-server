@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, PrimaryColumn} from "typeorm";
 
 export interface IUserEntity {
     id: number,
@@ -8,11 +8,11 @@ export interface IUserEntity {
     updatedAt:string
 }
 
-@Entity("user")
+@Entity("users")
 export class UserEntity implements IUserEntity {
     @PrimaryGeneratedColumn()
     id!: number;
-    @Column()
+    @PrimaryColumn()
     name!: string;
     @Column()
     password!: string;

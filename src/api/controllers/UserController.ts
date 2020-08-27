@@ -1,15 +1,32 @@
-import * as express from 'express';
+import {Response} from "express";
 import {inject} from "inversify";
-import {controller, httpGet, httpPost, requestBody, requestParam, response} from "inversify-express-utils";
-import {SERVICE} from "../identifiers";
+import {
+    BaseHttpController,
+    controller,
+    httpGet,
+    httpPost,
+    requestBody,
+    requestParam,
+    response
+} from "inversify-express-utils";
+import {MIDDLEWARE, SERVICE} from "../../identifiers";
+import {AuthMiddleware} from "../../common/middlewares/AuthMiddleware";
+
+export interface IUserRequest extends Request {
+    id: string,
+    name: string,
+    password: string,
+    token: string,
+    refreshToken: string
+}
 
 @controller('/user')
-export class UserController {
-    constructor(@inject(SERVICE.UserService) private userService: any) {
-    }
+export class UserController extends BaseHttpController {
+    @inject(SERVICE.UserService) private userService: any;
+    @inject(SERVICE.JwtService) private jwtService: any;
 
-    @httpGet('/')
-    async getUsers(@response() res: express.Response) {
+    @httpGet('/', AuthMiddleware)
+    async getUsers(@response() res: Response) {
         try {
             return await this.userService.getAllUsers();
         } catch (err) {
@@ -18,11 +35,11 @@ export class UserController {
         }
     }
 
-    @httpGet('/:id')
-    async getUser(@requestParam('id') param: string, @response() res: express.Response) {
+    @httpGet('/:id', AuthMiddleware)
+    async getUser(@requestParam('id') param: string, @response() res: Response) {
         try {
-            const id = parseInt(param);
-            return await this.userService.getUserById(id);
+            const userId = Number(param);
+            return await this.userService.getUserById(userId);
         } catch (err) {
             res.status(500);
             res.send(err.message);
@@ -30,20 +47,24 @@ export class UserController {
     }
 
     @httpPost('/')
-    async createUser(@requestBody() newUser: express.Request, @response() res: express.Response) {
+    async createUser(@requestBody() entry: IUserRequest, @response() res: Response) {
         try {
-            return await this.userService.createUser(newUser);
+            const newUser = await this.userService.createUser(entry);
+            const newUserTokenPair = await this.jwtService.issueTokenPair(newUser.id);
+            res.header('auth-token', newUserTokenPair);
+            return {...newUser, ...newUserTokenPair};
         } catch (err) {
             res.status(500);
             res.send(err.message);
         }
     }
 
-    @httpPost('/:id')
-    async updateUser(@requestParam('id') param: string, @requestBody() data: express.Request, @response() res: express.Response) {
+    @httpPost('/:id', AuthMiddleware)
+    async updateUser(@requestParam('id') param: string, @requestBody() entry: IUserRequest, @response() res: Response) {
         try {
-            const id = parseInt(param);
-            return await this.userService.updateUser(id, data);
+            const userId = Number(param);
+            const userData = JSON.stringify(entry)
+            return await this.userService.updateUser(userId, userData);
         } catch (err) {
             res.status(500);
             res.send(err.message);

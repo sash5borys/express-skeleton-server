@@ -1,15 +1,14 @@
 import "reflect-metadata";
 import * as config from "config";
-import * as os from 'os';
-import * as cluster from 'cluster';
-import * as express from 'express';
+import * as os from "os";
+import * as cluster from "cluster";
 import * as bodyParser from "body-parser";
 // import * as helmet from "helmet";
-import {Container} from "inversify";
-import {InversifyExpressServer} from "inversify-express-utils";
-import {createConnection} from "typeorm";
+import { Container } from "inversify";
+import { InversifyExpressServer } from "inversify-express-utils";
+import { createConnection } from "typeorm";
 
-import {ApplicationContainer, ApiContainer} from "./containers";
+import { ApplicationContainer, ApiContainer } from "./containers";
 
 const port = 3000;
 const containers = [ApplicationContainer, ApiContainer];
@@ -42,8 +41,7 @@ const setupCluster = () => {
 
 const startServer = async () => {
     const container = new Container();
-    await container.loadAsync(...containers);
-
+    await container.loadAsync(ApplicationContainer, ApiContainer);
     const app = new InversifyExpressServer(container);
     app.setConfig(app => {
         app.use(bodyParser.urlencoded({

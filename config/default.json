@@ -1,4 +1,5 @@
 {
+  "jwtPrivateKey": "VERYSECRETKEY",
   "Databases": {
     "type": "mysql",
     "host": "localhost",
@@ -9,14 +10,16 @@
     "database": "express_skeleton_server",
     "logging": false,
     "entities": [
-      "bin/api/entities/*.js"
+      "bin/api/entities/*.js",
+      "bin/common/entities/*.js"
     ],
     "migrations": [
       "bin/database/migrations/*.js"
     ],
     "cli": {
       "entitiesDir": [
-        "bin/api/entities"
+        "bin/api/entities",
+        "bin/common/entities"
       ],
       "migrationsDir": [
         "bin/database/migrations"
