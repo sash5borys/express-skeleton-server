@@ -1,8 +1,10 @@
+import {genSaltSync, hashSync} from "bcryptjs";
+
+const salt = genSaltSync(10);
+
 export const userSeed = [
     {
         name: "Admin",
-        password: "Admin",
-        createdAt: `${new Date()}`,
-        updatedAt: `${new Date()}`
+        password: hashSync("Admin", salt)
     }
 ];
